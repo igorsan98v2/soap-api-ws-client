@@ -1,4 +1,4 @@
-import SoapAPI from './SoapAPI'
+import SoapAPI from './SoapAPI';
 
 class EnterpiseService{
     constructor(){
@@ -16,11 +16,10 @@ class EnterpiseService{
         fetch(url,params)
             .then(response=>response.text())
                 .then(text=>{
-                    let parser = new DOMParser();
+                      let parser = new DOMParser();
                     let xmlDoc = parser.parseFromString(text.toString(),"text/xml");
                     return xmlDoc;
-                }).
-                    then(xml=>{
+                }).then(xml=>{
                         const name =  xml.getElementsByTagName("ns2:name")[0];
                         const activity = xml.getElementsByTagName("ns2:type_of_activity")[0];
                         const ceo = xml.getElementsByTagName("ns2:ceo")[0];
@@ -121,31 +120,34 @@ class EnterpiseService{
                 .then(text=>{
                     let parser = new DOMParser();
                     let xmlDoc = parser.parseFromString(text.toString(),"text/xml");
-                    return xmlDoc}).
-                    then(xml=>{
-                       const enterprises = []
-                       const names =  xml.getElementsByTagName("ns2:name");
-                       const activitys = xml.getElementsByTagName("ns2:type_of_activity");
-                       const ceos = xml.getElementsByTagName("ns2:ceo");
-                       const founders = xml.getElementsByName("ns2:founder");
-                       const foundeds = xml.getElementsByTagName("ns2:founded");
-                       const staffs = xml.getElementsByTagName("ns2:staff");
-                       for(let i=0;i<names.length;i++){
-                           enterprises.push({
-                             name:this.getData(names[i]),
-                             activity:this.getData(activitys[i]),
-                             ceo:this.getData(ceos[i]),
-                             founded:this.getData(foundeds[i]),
-                             founder:this.getData(founders[i]),
-                             staff:this.getData(staffs[i])
-                           });
-                       }
-                       
+                    var xml2js = require('xml2js');
+                    var pars = new xml2js.Parser(/* options */);
+                    return pars.parseStringPromise(text).then(function (result) {
+                            const body =  result["SOAP-ENV:Envelope"]["SOAP-ENV:Body"];
+                            const response = body[0]['ns2:getEnterprisesRespond'];
+                            const enterpises =response[0]["ns2:enterprises"];
+                            return enterpises;
+                        });
+                    }).
+                    then(xmlEnterpises=>{
+                      
+                       const enterprises = [];
+                       xmlEnterpises.forEach(enterprise => {
+                            let newEnterprise ={
+                                name: enterprise["ns2:name"][0],
+                                activity:enterprise["ns2:type_of_activity"][0],
+                                ceo:enterprise["ns2:ceo"][0],
+                                founder:enterprise["ns2:founder"][0],
+                                staff:enterprise["ns2:staff"][0]
+                            };
+                            enterprises.push(newEnterprise);
+                       });
+                      
                        context().setState({
                            enterprises:enterprises,
                            isLoading:false 
                         });
-                    });
+                    })
     }
 }
 

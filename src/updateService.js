@@ -18,14 +18,14 @@ class UpdateService{
             let tag =" "+ row.childNodes[i].className;
             tag = tag.replace("cell ","").trim();
             
-            console.log(tag);
+            console.log({tag:tag,element:row.childNodes[i].className});
             switch(tag){
             
                 case "name":
                     enterprise.name = row.childNodes[i].innerText;
                     console.log("name founded");
                     console.log( enterprise.name )
-                    break;
+                    continue;
                 case "ceo":
                     enterprise.ceo = row.childNodes[i].innerText;
                     break;
@@ -34,12 +34,14 @@ class UpdateService{
                     break;
                 case "founder":
                     enterprise.founder = row.childNodes[i].innerText;
+                    console.log("founder finded");
+                    console.log( enterprise.founder );
                     break;
                 case "founded":
                     enterprise.founded = row.childNodes[i].innerText;
                     break;
                 case "staff":   
-                    enterprise.founded = row.childNodes[i].innerText;
+                    enterprise.staff = row.childNodes[i].innerText;
                     break;
                  
             }
@@ -47,11 +49,10 @@ class UpdateService{
       
      
        // context.nameRef.input.value = enterprise.name;
+        context.setState({updateEnterprise:enterprise}); 
         context.setState({showModal:true});
         console.log(enterprise);
-        console.log(context.nameRef);
-        
-
+    
         return enterprise;
 
     }

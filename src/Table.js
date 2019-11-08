@@ -5,6 +5,7 @@ import ReactModal from 'react-modal';
 import Input from '@material-ui/core/Input'; 
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
+import { TextField } from '@material-ui/core';
 class EnterpriseTable extends Component{
     state = {
         isLoading: true,
@@ -14,10 +15,18 @@ class EnterpriseTable extends Component{
         page:0,
         pageSize:5,
         showModal: false,
-       // updateEnterprise:{name:'',ceo:'',activity:'',staff:'',founded:'',founder:''},
-        error: null
-    }
+        updateEnterprise:{name:'',ceo:'',activity:'',staff:'',founded:'',founder:''},
+        activityTypes:[{value:'IT',label:'IT'},
+            {value:'Машинобудування',label:'Машинобудування'},
+            {value:'Продаж авто',label:'Продаж авто'},
+            {value:'Легка промисловість',label:'Легка промисловість'},
+            {value:'GameDev',label:'GameDev'},
+            {value:'Продаж продуктів',label:'Продаж продуктів'},
 
+        ],
+        error: null
+    };
+   
     handleOpenModal () {
         this.setState({ showModal: true });
       }
@@ -55,17 +64,11 @@ class EnterpriseTable extends Component{
  
         this.handleOpenModal = this.handleOpenModal.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
-
+        this.handleChange = this.handleChange.bind(this);
         this.service.loadPage({page:0,pageSize:5},this.getTableContext);        
     }
-    handleChange = (event) => {
-        const { target: { name, value } } = event;
-        const enterprise =  this.state.updateEnterprise;
-        enterprise.name = name;
-        console.log(event);
     
-        this.setState({name:value});
-      }
+
     render(){
         const { isLoading, enterprises, error } = this.state;
         return (
@@ -107,12 +110,23 @@ class EnterpriseTable extends Component{
                 isOpen={this.state.showModal}
                 shouldCloseOnOverlayClick={true}
                 shouldCloseOnEsc={true}>
-                  <Input
+                    <Input
                         placeholder="Назва підприємства"
                          inputProps={{
                            'aria-label': 'description',
-                         } } id="name-e" ref = {this.nameRef} onChange={this.handleChange}/>
-                    
+                         } } 
+                         id="name-e" ref = {this.nameRef} defaultValue={this.state.updateEnterprise.name} />
+                    <Input placeholder="ФІО зісновника" id='founder-e' 
+                     disabled
+                    ref ={this.founderRef}
+                        defaultValue={this.state.updateEnterprise.founder}
+                    />
+                    <Input placeholder="ФІО керівника" id="ceo-e" 
+                            defaultValue = {this.state.updateEnterprise.ceo}/>
+                     <TextField select placeholder="діяльність" id="activity-e" 
+                           />        
+                    <Input placeholder="штат співробітників" id="staff-e"
+                            defaultValue={this.state.updateEnterprise.staff}/>
                     <Button onClick={this.handleCloseModal}>
                         update
                     </Button>

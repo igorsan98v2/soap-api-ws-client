@@ -64,7 +64,6 @@ class EnterpriseTable extends Component{
  
         this.handleOpenModal = this.handleOpenModal.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
-        this.handleChange = this.handleChange.bind(this);
         this.service.loadPage({page:0,pageSize:5},this.getTableContext);        
     }
     
